@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using demo1.Models;
+using Newtonsoft.Json.Linq;
 
 namespace demo1.Controllers
 {
@@ -22,9 +23,10 @@ namespace demo1.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<ActionResult<IEnumerable<User>>> GetUser(string msg)
         {
-            return await _context.User.ToListAsync();
+            System.Diagnostics.Debug.Write(msg);
+            return await _context.User.Include(b => b.apartment).ToListAsync();
         }
 
         // GET: api/Users/5
@@ -38,6 +40,7 @@ namespace demo1.Controllers
                 return NotFound();
             }
 
+            await _context.Entry(user).Reference(a => a.apartment).LoadAsync();
             return user;
         }
 

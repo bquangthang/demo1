@@ -29,7 +29,7 @@ namespace demo1.Controllers
 
         // GET: api/Apartments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Apartment>> GetApartment(long id)
+        public async Task<ActionResult<Apartment>> GetApartment(int id)
         {
             var apartment = await _context.apartments.FindAsync(id);
 
@@ -37,6 +37,7 @@ namespace demo1.Controllers
             {
                 return NotFound();
             }
+            await _context.Entry(apartment).Collection(a => a.users).LoadAsync();
 
             return apartment;
         }
